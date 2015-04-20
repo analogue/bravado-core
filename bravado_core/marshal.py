@@ -111,7 +111,7 @@ def marshal_object(swagger_spec, object_spec, object_value):
             type(object_value), object_value))
 
     result = {}
-    for k, v in object_value.iteritems():
+    for k, v in object_value.items():
 
         # Values cannot be None - skip them entirely!
         if v is None:

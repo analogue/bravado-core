@@ -128,7 +128,7 @@ class Operation(object):
             is not supplied.
         """
         current_params = self.params.copy()
-        for param_name, param_value in op_kwargs.iteritems():
+        for param_name, param_value in op_kwargs.items():
             param = current_params.pop(param_name, None)
             if param is None:
                 raise TypeError("{0} does not have parameter {1}".format(

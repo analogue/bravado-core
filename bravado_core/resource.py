@@ -46,7 +46,7 @@ def build_resources(swagger_spec):
     # key = tag_name   value = { operation_id : Operation }
     tag_to_operations = defaultdict(dict)
     paths = swagger_spec.spec_dict['paths']
-    for path_name, path_spec in paths.iteritems():
+    for path_name, path_spec in paths.items():
         for http_method, operation_spec in path_spec.items():
             operation = Operation.from_spec(
                 swagger_spec, path_name, http_method, operation_spec)
@@ -59,7 +59,7 @@ def build_resources(swagger_spec):
                 tag_to_operations[tag][operation.operation_id] = operation
 
     resources = {}
-    for tag, operations in tag_to_operations.iteritems():
+    for tag, operations in tag_to_operations.items():
         resources[tag] = Resource(tag, operations)
     return resources
 

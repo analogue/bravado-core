@@ -21,7 +21,7 @@ def build_models(definitions_spec):
     :returns: dict where (name,value) = (model name, model type)
     """
     models = {}
-    for model_name, model_spec in definitions_spec.iteritems():
+    for model_name, model_spec in definitions_spec.items():
         # make models available under both simple name and $ref style name
         # - Pet <-- TODO: remove eventually
         # - #/definitions/Pet
@@ -102,26 +102,27 @@ def model_constructor(model, model_spec, constructor_kwargs):
         model specification's list of properties
     """
     arg_names = constructor_kwargs.keys()
+    remaining_arg_names = list(arg_names)
 
-    for attr_name, attr_spec in model_spec['properties'].iteritems():
+    for attr_name, attr_spec in model_spec['properties'].items():
         if attr_name in arg_names:
             attr_value = constructor_kwargs[attr_name]
-            arg_names.remove(attr_name)
+            remaining_arg_names.remove(attr_name)
         else:
             attr_value = None
         setattr(model, attr_name, attr_value)
 
-    if arg_names and not model_spec.get('additionalProperties', True):
+    if remaining_arg_names and not model_spec.get('additionalProperties', True):
         raise AttributeError(
             "Model {0} does not have attributes for: {1}"
-            .format(type(model), arg_names))
+            .format(type(model), remaining_arg_names))
 
     # we've got additionalProperties to set on the model
-    for arg_name in arg_names:
+    for arg_name in remaining_arg_names:
         setattr(model, arg_name, constructor_kwargs[arg_name])
 
     # stash so that dir(model) works
-    model._additional_props = arg_names
+    model._additional_props = remaining_arg_names
 
 
 def create_model_repr(model, model_spec):
@@ -147,7 +148,7 @@ def tag_models(spec_dict):
     """
     # TODO: unit test + docstring
     models_dict = spec_dict.get('definitions', {})
-    for model_name, model_spec in models_dict.iteritems():
+    for model_name, model_spec in models_dict.items():
         model_type = model_spec.get('type')
 
         # default type type to 'object' since most swagger specs don't bother
@@ -175,7 +176,7 @@ def fix_malformed_model_refs(spec):
 
     def descend(fragment):
         if is_dict_like(fragment):
-            for k, v in fragment.iteritems():
+            for k, v in fragment.items():
                 if k == '$ref' and v in model_names:
                     fragment[k] = "#/definitions/{0}".format(v)
                 descend(v)
@@ -201,7 +202,7 @@ def create_model_docstring(model_spec):
     :rtype: string
     """
     s = "Attributes:\n\n\t"
-    attr_iter = iter(sorted(model_spec['properties'].iteritems()))
+    attr_iter = iter(sorted(model_spec['properties'].items()))
     # TODO: Add more stuff available in the spec - 'required', 'example', etc
     for attr_name, attr_spec in attr_iter:
         schema_type = attr_spec['type']

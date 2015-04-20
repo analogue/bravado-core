@@ -1,5 +1,9 @@
 import logging
-import urlparse
+
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 import jsonref
 from swagger_spec_validator import validator20
